@@ -1,0 +1,5 @@
+{
+  "name": "UniFi PoE Control",
+  "homeassistant": "2023.1.0",
+  "render_readme": true
+}

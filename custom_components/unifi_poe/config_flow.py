@@ -111,9 +111,9 @@ class UniFiPoEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            # Parse the combined device_port selection (mac:port_idx:port_name)
+            # Parse the combined device_port selection (mac|port_idx|port_name)
             device_port = user_input.get("device_port", "")
-            parts = device_port.split(":", 2)
+            parts = device_port.split("|")
             if len(parts) >= 2:
                 self._data[CONF_SWITCH_MAC] = parts[0]
                 self._data[CONF_PORT_NUMBER] = int(parts[1])
@@ -138,8 +138,8 @@ class UniFiPoEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 port_idx = port["port_idx"]
                 port_name = port["name"]
                 poe_power = port.get("poe_power", "0")
-                # Value format: mac:port_idx:port_name
-                value = f"{device_mac}:{port_idx}:{port_name}"
+                # Value format: mac|port_idx|port_name (using | to avoid MAC colon conflicts)
+                value = f"{device_mac}|{port_idx}|{port_name}"
                 label = f"{device_name} - {port_name} (Port {port_idx}, {poe_power}W)"
                 port_options.append(
                     selector.SelectOptionDict(value=value, label=label)
